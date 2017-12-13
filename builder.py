@@ -8,13 +8,6 @@ import shutil
 import signal
 from threading import Thread
 
-
-# 13 sec
-# 
-# 1200
-# 1200
-# 680
-
 #TODO: implement ClusterEntry
 #TODO: calculate time to end (sqlite3)
 
