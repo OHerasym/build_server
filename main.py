@@ -1,14 +1,17 @@
 import os
 import time
 from datetime import datetime
+from custom_logger import logger
+from tele import bot
 import builder
 import rtc
-import tele
+import target_image
 
 
-#TODO: report module
-#TODO: send all 
-#TODO: save all data inside builder
+
+class GlobalValues:
+	close_target_image = False
+
 
 def get_and_build():
 	_rtc = rtc.RTCConnect()
@@ -28,13 +31,20 @@ def check_time():
 	return False
 
 def main():
+	logger.info('Start execution')
+	bot.send_message('Start execution')
+
+	t_image = target_image.TargetImage()
 
 
-	while True:
-		print(check_time())
-		if check_time():
-			get_and_build()
-		time.sleep(30)
+	t_image.run()
+
+
+	# while True:
+	# 	print(check_time())
+	# 	if check_time():
+	# 		get_and_build()
+	# 	time.sleep(30)
 
 
 

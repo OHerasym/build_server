@@ -25,4 +25,5 @@ class MyLogger:
 
 		return _logger
 
+# print('[INFO] Logger init')
 logger = MyLogger.logger_init()

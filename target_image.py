@@ -4,6 +4,9 @@ import time
 import pickle
 import threading
 from custom_logger import *
+from tele import bot
+from tele import GlobalData
+
 from config import TargetImagesConfig as target_link
 
 #TODO: add main loop
@@ -14,6 +17,7 @@ from html.parser import HTMLParser
 
 
 class TempState:
+	close_target_image = False
 	_image_link_is_set = False
 	download_link = ''
 	last_daily_high = ''
@@ -117,9 +121,11 @@ class TargetImage:
 		self._check_all_folders()
 
 		file_name = image_link.split('/')[-1]
-		logger.info('Download file:', file_name)
+		logger.info('Downloading file:' + file_name)
+		bot.send_message('Downloading file: ' + file_name)
 
-		urllib.request.urlretrieve(image_link, self._images_folder + self._get_image_save_path(file_name), self._reporthook)
+		# urllib.request.urlretrieve(image_link, self._images_folder + self._get_image_save_path(file_name), self._reporthook)
+		urllib.request.urlretrieve(image_link, self._images_folder + self._get_image_save_path(file_name))
 
 	def _read_page(self, jenkins_link):
 		with urllib.request.urlopen(jenkins_link) as url:
@@ -173,7 +179,7 @@ class TargetImage:
 		TempState._image_link_is_set = False
 
 		if TempState.last_release_entry != self._get_file_name(target_link.entry_release_build + TempState.download_link):
-			TempState.last_release_entry = self._get_file_name(entry_release_build + TempState.download_link)
+			TempState.last_release_entry = self._get_file_name(target_link.entry_release_build + TempState.download_link)
 		else:
 			logger.info('Already last image')
 			return
@@ -205,6 +211,8 @@ class TargetImage:
 		while not self._stop_images_thread:
 			self.download_all()
 			time.sleep(10)
+			if GlobalData.telegram_closed:
+				self.stop()
 
 	def stop(self):
 		self._stop_images_thread = True
@@ -219,8 +227,8 @@ def main():
 	target_image = TargetImage()
 	target_image.run()
 
-	input()
-	target_image.stop()
+	# input()
+	# target_image.stop()
 
 
 if __name__ == '__main__':
