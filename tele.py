@@ -3,7 +3,7 @@ import time
 import datetime
 import telegram
 from threading import Thread
-import test_runnner
+# import test_runnner
 from tele_const import *
 from custom_logger import logger
 from version import TargetVersion
@@ -36,7 +36,14 @@ class TelegramBot:
 			except:
 				logger.error('Exception during updating telegram data')
 				pass
-			logger.info('Last message: ' + self._last_message)
+			try:
+				cod = self._last_message.encode('utf8', 'ignore')
+				# logger.info('Last message: ' + self._last_message)
+				logger.info('Last message: ' + cod.decode())
+			except:
+				logger.error('Coding error')
+				logger.info(self._last_message)
+				pass
 
 			if m_exit in self._last_message and not self._is_exit:
 				self._is_exit = True
@@ -52,10 +59,18 @@ class TelegramBot:
 				self._h = True
 				self.send_message(m_all_ok)
 
-			if 'Версія' in self._last_message and self._last_message != self._last_checked_message:
+			if 'Шо на таргеті?' in self._last_message and self._last_message != self._last_checked_message:
 				ver = TargetVersion()
-				qq = ver._read()
-				self.send_message(qq)
+
+				# qq = ver.get_version()
+				# self.send_message(qq)
+
+				try:
+					qq = ver.get_version()
+					self.send_message(qq)
+				except:
+					logger.error('FTP conenction error')
+					self.send_message('FTP conenction error')
 
 			if m_run_tests in self._last_message and not self._is_tests_running:
 				logger.info('Start executing test runner')
@@ -69,6 +84,7 @@ class TelegramBot:
 			time.sleep(5)
 
 	def send_message(self, message):
+		logger.info('Send message: ' + message)
 		chat_id = self._get_last_chat_id()
 		if chat_id:
 			self._bot.send_message(chat_id=self._get_last_chat_id(), text=message)

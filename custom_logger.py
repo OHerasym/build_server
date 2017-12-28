@@ -5,7 +5,7 @@ class MyLogger:
 		_logger = logging.getLogger('build_checker')
 		_logger.setLevel(logging.DEBUG)
 
-		fh = logging.FileHandler('example.log')
+		fh = logging.FileHandler('example.log', encoding='utf-8')
 		fh.setLevel(logging.DEBUG)
 
 		ch = logging.StreamHandler()

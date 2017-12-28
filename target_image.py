@@ -12,7 +12,7 @@ from config import TargetImagesConfig as target_link
 #TODO: add main loop
 
 import urllib.request
-import requests
+# import requests
 from html.parser import HTMLParser
 
 
